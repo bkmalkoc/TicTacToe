@@ -28,7 +28,8 @@ namespace TicTacToe
                 playerIcon = 'Y';
             }
 
-            ChangeVariableOnMatrix(playerIndexChoice, playerIcon);
+            CheckIfThePositionAlreadyFilled(playerIndexChoice, playerIcon);
+            //ChangeVariableOnMatrix(playerIndexChoice, playerIcon);
             UpdateMatrix(arr);
 
             int winner = 0;
@@ -49,7 +50,8 @@ namespace TicTacToe
                     loopIndex = 2;
                 }
 
-                ChangeVariableOnMatrix(playerIndexChoice, playerIcon);
+                CheckIfThePositionAlreadyFilled(playerIndexChoice, playerIcon);
+                //ChangeVariableOnMatrix(playerIndexChoice, playerIcon);
                 UpdateMatrix(arr);
 
                 winner = ChooseWinner();
@@ -92,8 +94,8 @@ namespace TicTacToe
         public static bool IfTheNumberBetween1and10(string input)
         {
             int num = 0;
-            bool ifNum = Int32.TryParse(input, out num);
-            if (ifNum)
+            bool ifNumIsInt = Int32.TryParse(input, out num);
+            if (ifNumIsInt)
             {
                 int numm = int.Parse(input);
                 if (numm > 0 && numm < 10)
@@ -113,14 +115,65 @@ namespace TicTacToe
 
         public static void ChangeVariableOnMatrix(int input, char playerIcon)
         {
-            if(arr[input] == 'X' || arr[input] == 'Y')
-            {
-                Console.WriteLine("Already chosen. Missed your chance");
-            }
-            else
+            if(arr[input] != 'X' || arr[input] != 'Y')
             {
                 arr[input] = playerIcon;
             }
+        }
+
+        public static void CheckIfThePositionAlreadyFilled(int input, char icon)
+        {
+            //if(arr[input] == 'X' && icon == 'X')
+            //{
+            //    input = ReadFromPlayer1();
+            //}
+            //else
+            //{
+            //    input = ReadFromPlayer2();
+            //}
+            while (arr[input] == 'Y' || arr[input] == 'X')
+            {
+                if (arr[input] == 'X')
+                {
+                    if (icon == 'X')
+                    {
+                        input = ReadFromPlayer1();
+                    }
+                    else
+                    {
+                        input = ReadFromPlayer2();
+                    }
+                }
+                else if (arr[input] == 'Y')
+                {
+                    if (icon == 'Y')
+                    {
+                        input = ReadFromPlayer2();
+                    }
+                    else
+                    {
+                        input = ReadFromPlayer1();
+                    }
+                }
+            }
+
+            //if(arr[input] == 'X')
+            //{
+            //    if(icon == 'X')
+            //    {
+            //        input = ReadFromPlayer1();
+            //    }
+            //    //input = ReadFromPlayer2();
+            //}
+            //else if (arr[input] == 'Y')
+            //{
+            //    if(icon == 'Y')
+            //    {
+            //        input = ReadFromPlayer2();
+            //    }
+            //    //input = ReadFromPlayer1();
+            //}
+            ChangeVariableOnMatrix(input, icon);
         }
 
         public static int ChooseStarter()
