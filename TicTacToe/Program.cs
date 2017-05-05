@@ -48,6 +48,7 @@ namespace TicTacToe
                     playerIcon = 'Y';
                     loopIndex = 2;
                 }
+
                 ChangeVariableOnMatrix(playerIndexChoice, playerIcon);
                 UpdateMatrix(arr);
 
@@ -57,67 +58,51 @@ namespace TicTacToe
                     Console.WriteLine("Congrats Player" );
                     break;
                 }
-
             } while (winner != 1);
-
             Console.ReadLine();
         }
 
         public static int ReadFromPlayer1()
         {
-            Console.WriteLine("Enter a coordinate for Player1: ");
-            int readLine = int.Parse(Console.ReadLine());
-            return readLine;
+            string readLine = null;
+            Console.WriteLine("Enter a coordinate for Player 1: ");
+            readLine = Console.ReadLine();
+            while (!IfTheNumberBetween1and10(readLine))
+            {
+                Console.WriteLine("Enter a proper coordinate ");
+                readLine = Console.ReadLine();
+            }
+            return int.Parse(readLine);
         }
 
         public static int ReadFromPlayer2()
         {
+            string readLine = null;
             Console.WriteLine("Enter a coordinate for Player 2: ");
-            int readLine = int.Parse(Console.ReadLine());
-            return readLine;
+            readLine = Console.ReadLine();
+
+            while (!IfTheNumberBetween1and10(readLine))
+            {
+                Console.WriteLine("Enter a proper coordinate ");
+                readLine = Console.ReadLine();
+            }
+            return int.Parse(readLine);
         }
 
-        //public static void CreateXYMatrix()
-        //{
-        //    const int MATRIX_ROWS = 3;
-        //    const int MATRIX_COLUMNS = 3;
-
-        //    int inputX = 0;
-        //    int inputY = 0;
-
-        //    double[,] matrix = new double[MATRIX_ROWS, MATRIX_COLUMNS];
-            
-            
-
-
-        //    for (int i = 0; i < MATRIX_ROWS; i++)
-        //    {
-        //        for (int j = 0; j < MATRIX_COLUMNS; j++)
-        //        {
-        //            Console.Write("Enter value for ({0},{1}): ", i, j);
-        //            string input = Console.ReadLine();
-        //            int intInput = 0;
-
-        //            if(input == "" || input == null)
-        //            {
-        //                input = "0";
-        //                intInput = int.Parse(input);
-        //                matrix[i, j] = intInput;
-        //            }
-        //            intInput = int.Parse(input);
-        //            matrix[i, j] = intInput;
-        //        }
-        //    }
-
-        //    for(int i = 0; i < MATRIX_ROWS; i++)
-        //    {
-        //        for (int y = 0; y < MATRIX_COLUMNS; y++)
-        //        {
-        //            Console.Write(matrix[i,y] + " ");
-        //        }
-        //        Console.WriteLine(" ");
-        //    }
-        //}
+        public static bool IfTheNumberBetween1and10(string input)
+        {
+            int num = 0;
+            bool ifNum = Int32.TryParse(input, out num);
+            if (ifNum)
+            {
+                int numm = int.Parse(input);
+                if (numm > 0 && numm < 10)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         
         public static void UpdateMatrix(char[] arr)
         {
@@ -128,8 +113,14 @@ namespace TicTacToe
 
         public static void ChangeVariableOnMatrix(int input, char playerIcon)
         {
-            char choosenIndex = arr[input];
-            arr[input] = playerIcon;
+            if(arr[input] == 'X' || arr[input] == 'Y')
+            {
+                Console.WriteLine("Already chosen. Missed your chance");
+            }
+            else
+            {
+                arr[input] = playerIcon;
+            }
         }
 
         public static int ChooseStarter()
