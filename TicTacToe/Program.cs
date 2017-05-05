@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autofac;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,30 +7,56 @@ using System.Threading.Tasks;
 
 namespace TicTacToe
 {
-    class Program
+    public class Program
     {
+        private static IContainer _container;
+        private static IPlayer _player;
+
+        private static void Initialize()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<Players>();
+
+            _container = builder.Build();
+        }
+
+        private static void ResolveDependencies()
+        {
+            using (var scope = _container.BeginLifetimeScope())
+            {
+                _player = scope.Resolve<Players>();
+            }
+        }
+
         static char[] arr = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
         public static void Main(string[] args)
         {
+            Initialize();
+            ResolveDependencies();
+
+            Player player1 = new Player();
+            Player player2 = new Player();
+
             int playerIndexChoice = 0;
             char playerIcon;
-
+            
             UpdateMatrix(arr);
 
             int starter = ChooseStarter();
 
             if (starter == 1){
-                playerIndexChoice = ReadFromPlayer1();
+                Console.WriteLine("Player 1: ");
+                playerIndexChoice = _player.ReadFromPlayer(player1);
                 playerIcon = 'X';
             }
             else {
-                playerIndexChoice = ReadFromPlayer2();
+                Console.WriteLine("Player 2: ");
+                playerIndexChoice = _player.ReadFromPlayer(player2);
                 playerIcon = 'Y';
             }
 
             CheckIfThePositionAlreadyFilled(playerIndexChoice, playerIcon);
-            //ChangeVariableOnMatrix(playerIndexChoice, playerIcon);
             UpdateMatrix(arr);
 
             int winner = 0;
@@ -39,25 +66,27 @@ namespace TicTacToe
             {
                 if(loopIndex == 2)
                 {
-                    playerIndexChoice = ReadFromPlayer1();
+                    Console.WriteLine("Player 1: ");
+                    playerIndexChoice = _player.ReadFromPlayer(player1);
                     playerIcon = 'X';
                     loopIndex = 1;
                 }
                 else
                 {
-                    playerIndexChoice = ReadFromPlayer2();
+                    Console.WriteLine("Player 2: ");
+                    playerIndexChoice = _player.ReadFromPlayer(player2);
                     playerIcon = 'Y';
                     loopIndex = 2;
                 }
 
                 CheckIfThePositionAlreadyFilled(playerIndexChoice, playerIcon);
-                //ChangeVariableOnMatrix(playerIndexChoice, playerIcon);
                 UpdateMatrix(arr);
 
                 winner = ChooseWinner();
                 if(winner == 1)
                 {
-                    Console.WriteLine("Congrats Player" );
+                    string winnerName = playerIcon == 'X' ? "1" : "2";
+                    Console.WriteLine("Congrats Player {0}", winnerName );
                     break;
                 }
             } while (winner != 1);
@@ -123,56 +152,18 @@ namespace TicTacToe
 
         public static void CheckIfThePositionAlreadyFilled(int input, char icon)
         {
-            //if(arr[input] == 'X' && icon == 'X')
-            //{
-            //    input = ReadFromPlayer1();
-            //}
-            //else
-            //{
-            //    input = ReadFromPlayer2();
-            //}
             while (arr[input] == 'Y' || arr[input] == 'X')
             {
                 if (arr[input] == 'X')
                 {
-                    if (icon == 'X')
-                    {
-                        input = ReadFromPlayer1();
-                    }
-                    else
-                    {
-                        input = ReadFromPlayer2();
-                    }
+                    input =  icon == 'X' ?  ReadFromPlayer1() : ReadFromPlayer2();
+                    
                 }
                 else if (arr[input] == 'Y')
                 {
-                    if (icon == 'Y')
-                    {
-                        input = ReadFromPlayer2();
-                    }
-                    else
-                    {
-                        input = ReadFromPlayer1();
-                    }
+                    input = icon == 'Y' ? ReadFromPlayer2() : ReadFromPlayer2();
                 }
             }
-
-            //if(arr[input] == 'X')
-            //{
-            //    if(icon == 'X')
-            //    {
-            //        input = ReadFromPlayer1();
-            //    }
-            //    //input = ReadFromPlayer2();
-            //}
-            //else if (arr[input] == 'Y')
-            //{
-            //    if(icon == 'Y')
-            //    {
-            //        input = ReadFromPlayer2();
-            //    }
-            //    //input = ReadFromPlayer1();
-            //}
             ChangeVariableOnMatrix(input, icon);
         }
 
